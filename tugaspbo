@@ -1,0 +1,180 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32228.430
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tugas pbo", "tugas pbo\tugas pbo.csproj", "{1F7C8CB2-E6BF-4324-9C98-8FA0D14E7603}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1F7C8CB2-E6BF-4324-9C98-8FA0D14E7603}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F7C8CB2-E6BF-4324-9C98-8FA0D14E7603}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F7C8CB2-E6BF-4324-9C98-8FA0D14E7603}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F7C8CB2-E6BF-4324-9C98-8FA0D14E7603}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A86CFB78-7F42-4A95-8977-82020565AA77}
+	EndGlobalSection
+EndGlobal
+
+using Npgsql;
+using System.Data;
+namespace TugasPbo
+{
+    class getting_data
+    {
+        private static NpgsqlConnection koneksi()
+        {
+            return new NpgsqlConnection(@"server=localhost;port=5432;user id=postgres;password=killpack@11;database=pbo;");
+        }
+        public bool ExecuteQuery(out bool info)
+
+        {
+            info = true;
+            try
+            {
+
+                NpgsqlConnection con = koneksi();
+                con.Open();
+                string sql = "select * from karyawan";
+                NpgsqlCommand cmd = new NpgsqlCommand(sql, con);
+                NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+                return info;
+            }
+            catch (Exception)
+            {
+                info = false;
+                return info;
+            }
+
+        }
+    }
+    class operasi
+    {
+        private static NpgsqlConnection koneksi()
+        {
+            return new NpgsqlConnection(@"server=localhost;port=5432;user id=postgres;password=killpack@11;database=pbo;");
+        }
+        public bool insert(ref bool info)
+        {
+            try
+            {
+                NpgsqlConnection con = koneksi();
+                con.Open();
+                NpgsqlCommand cmd = new NpgsqlCommand("insert into karyawan(id_karyawan,nama,no_hp) values('1','arthur','083849328808')", con);
+                cmd.ExecuteNonQuery();
+                cmd.Dispose();
+                con.Close();
+                info = true;
+                return info;
+            }
+            catch (Exception)
+            {
+                return info;
+            }
+        }
+        public bool update(ref bool info)
+        {
+            try
+            {
+                NpgsqlConnection con = koneksi();
+                con.Open();
+                NpgsqlCommand cmd = new NpgsqlCommand("update karyawan set nama = lucas, no_hp = 082139242512 where id_karyawan = 1", con);
+                cmd.ExecuteNonQuery();
+                cmd.Dispose();
+                con.Close();
+                info = true;
+                return info;
+            }
+            catch (Exception)
+            {
+                return info;
+            }
+        }
+        public bool Delete(ref bool info)
+        {
+            try
+            {
+                NpgsqlConnection con = koneksi();
+                con.Open();
+                NpgsqlCommand cmd = new NpgsqlCommand("delete from karyawan where id_karyawan = 1", con);
+                cmd.ExecuteNonQuery();
+                cmd.Dispose();
+                con.Close();
+                info = true;
+                return info;
+            }
+            catch (Exception)
+            {
+                return info;
+            }
+        }
+    }
+    class program_utama
+    {
+        static void Main(string[] args)
+        {
+            bool info;
+            bool ingfo = false;
+            getting_data dat = new getting_data();
+            operasi op = new operasi();
+            if (dat.ExecuteQuery(out info) == true)
+            {
+                Console.WriteLine("data terkonfirmasi");
+            }
+            else if (dat.ExecuteQuery(out info) == false)
+            {
+                Console.WriteLine("data tidak terkonfirmasi");
+            }
+            if (op.insert(ref ingfo) == true)
+            {
+                Console.WriteLine("insert sukses");
+            }
+            else if (op.insert(ref ingfo) == false)
+            {
+                Console.WriteLine("insert gagal");
+            }
+            if (op.update(ref ingfo) == true)
+            {
+                Console.WriteLine("update sukses");
+            }
+            else if (op.update(ref ingfo) == false)
+            {
+                Console.WriteLine("update gagal");
+            }
+            if (op.Delete(ref ingfo) == true)
+            {
+                Console.WriteLine("delete sukses");
+            }
+            else if (op.Delete(ref ingfo) == false)
+            {
+                Console.WriteLine("delete gagal");
+            }
+        }
+    }
+} 
+
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>tugas_pbo</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Npgsql" Version="6.0.4" />
+  </ItemGroup>
+
+</Project>
